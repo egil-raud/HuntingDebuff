@@ -1,0 +1,12 @@
+{
+    "$schema": "https://moddbcdn.vintagestory.at/schema/modinfo.latest.json",
+    "type": "Code",
+    "modid": "gui_damage",
+    "name": "gui_damage",
+    "authors": ["Egil_Raud", "Wartouch"],
+    "description": "Deals bleeding damage",
+    "version": "2.2.3",
+    "dependencies": {
+        "game": "1.21.6"
+    }
+}

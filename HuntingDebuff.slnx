@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="HuntingDebuff/HuntingDebuff/HuntingDebuff.csproj" />
+  <Project Path="HuntingDebuff/ZZCakeBuild/CakeBuild.csproj" />
+</Solution>
