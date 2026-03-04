@@ -15,6 +15,10 @@ namespace Gnd.HuntingDebuffs
         {
             try
             {
+                // Пропускаем, если цель - игрок
+                if (__instance is EntityPlayer)
+                    return;
+
                 HuntingDebuffSystem instance = HuntingDebuffSystem.Instance;
                 if (instance?.Sapi == null || __instance?.Alive != true)
                     return;
@@ -41,7 +45,7 @@ namespace Gnd.HuntingDebuffs
 
                 if (player != null)
                 {
-                    instance.ApplyBleedFromWeapon(__instance, player, weaponCode);
+                    instance.ApplyBleedFromWeapon(__instance, player, weaponCode, damage);
                 }
             }
             catch (Exception ex)

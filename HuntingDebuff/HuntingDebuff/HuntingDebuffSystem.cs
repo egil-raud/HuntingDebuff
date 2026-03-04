@@ -14,9 +14,9 @@ namespace Gnd.HuntingDebuffs
 {
     public class HuntingDebuffConfig
     {
-        public int MaxStacks { get; set; } = 10;
+        public int MaxStacks { get; set; } = 3;
         public int BleedDurationMs { get; set; } = 30000;
-        public float BleedDamagePerSecond { get; set; } = 0.5f;
+        public float BleedDamagePerSecond { get; set; } = 0.1f;
         public string[] ImmuneEntities { get; set; } = new string[]
         {
             "drifter",
@@ -297,10 +297,21 @@ namespace Gnd.HuntingDebuffs
             }
         }
 
-        public void ApplyBleedFromWeapon(Entity animal, IServerPlayer player, string weaponCode)
+        public void ApplyBleedFromWeapon(Entity animal, IServerPlayer player, string weaponCode, float damage = 0)
         {
             if (animal == null || player == null)
                 return;
+
+            // Пропускаем игроков
+            if (animal is EntityPlayer)
+                return;
+
+            // Проверяем, что урон больше 1 HP (критический удар)
+            if (damage <= 1.0f)
+            {
+                _sapi.Logger.Debug("[GND] Damage too low (" + damage + ") to apply bleed - skipping.");
+                return;
+            }
 
             // Проверяем, НЕ является ли существо иммунным (из blacklist)
             if (IsEntityImmune(animal))
@@ -327,8 +338,8 @@ namespace Gnd.HuntingDebuffs
             string animalDisplayName = GetAnimalDisplayName(animal);
             string weaponName = GetWeaponName(weaponCode);
 
-            _sapi.Logger.Notification(string.Format("[GND] \ud83e\ude78 {0} wounded by {1} with {2} - Bleed stacks: {3}/{4}",
-                animalDisplayName, player.PlayerName, weaponName, newStacks, _config.MaxStacks));
+            _sapi.Logger.Notification(string.Format("[GND] \ud83e\ude78 {0} wounded by {1} with {2} - Bleed stacks: {3}/{4} (Damage: {5})",
+                animalDisplayName, player.PlayerName, weaponName, newStacks, _config.MaxStacks, damage));
         }
 
         private bool IsEntityImmune(Entity entity)
@@ -355,12 +366,14 @@ namespace Gnd.HuntingDebuffs
                 return false;
 
             string code = weaponCode.ToLower();
+
             return code.Contains("spear") || code.Contains("bow") || code.Contains("arrow");
         }
 
         private string GetWeaponName(string weaponCode)
         {
             string code = (weaponCode ?? "").ToLower();
+
             if (code.Contains("spear"))
                 return "Spear";
             if (code.Contains("arrow"))
