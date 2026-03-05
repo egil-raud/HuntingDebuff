@@ -16,13 +16,15 @@ namespace Gnd.HuntingDebuffs
     {
         public int MaxStacks { get; set; } = 3;
         public int BleedDurationMs { get; set; } = 30000;
-        public float BleedDamagePerSecond { get; set; } = 0.1f;
+        public float BleedDamagePerSecond { get; set; } = 0.2f;
         public string[] ImmuneEntities { get; set; } = new string[]
         {
             "drifter",
             "locust",
             "bell",
             "shiver",
+            "eidolon",
+            "erel",
             "bowtorn"
         };
 
@@ -297,7 +299,7 @@ namespace Gnd.HuntingDebuffs
             }
         }
 
-        public void ApplyBleedFromWeapon(Entity animal, IServerPlayer player, string weaponCode, float damage = 0)
+        public void ApplyBleedFromWeapon(Entity animal, IServerPlayer player, string weaponCode, float damage = 0, bool isRangedAttack = false)
         {
             if (animal == null || player == null)
                 return;
@@ -323,6 +325,13 @@ namespace Gnd.HuntingDebuffs
             if (!IsBleedWeapon(weaponCode))
             {
                 _sapi.Logger.Debug("[GND] Weapon '" + weaponCode + "' is not a bleed weapon - skipping.");
+                return;
+            }
+
+            // Для лука проверяем, что это именно дальнобойная атака (стрела)
+            if (weaponCode.Contains("bow") && !isRangedAttack)
+            {
+                _sapi.Logger.Debug("[GND] Bow melee attack detected in ApplyBleedFromWeapon - skipping.");
                 return;
             }
 
