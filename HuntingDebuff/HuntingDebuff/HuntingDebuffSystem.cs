@@ -14,7 +14,7 @@ namespace Gnd.HuntingDebuffs
 {
     public class HuntingDebuffConfig
     {
-        public int MaxStacks { get; set; } = 3;
+        public int MaxStacks { get; set; } = 1;
         public int BleedDurationMs { get; set; } = 30000;
         public float BleedDamagePerSecond { get; set; } = 0.2f;
         public string[] ImmuneEntities { get; set; } = new string[]
