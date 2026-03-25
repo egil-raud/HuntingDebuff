@@ -5,8 +5,5 @@
     "name": "Hunting_Debuff",
     "authors": ["Egil_Raud", "Wartouch"],
     "description": "Deals bleeding damage",
-    "version": "2.3.2",
-    "dependencies": {
-        "game": "1.21.6"
-    }
+    "version": "2.3.4"
 }

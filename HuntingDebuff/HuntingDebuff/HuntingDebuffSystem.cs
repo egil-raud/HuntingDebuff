@@ -69,7 +69,7 @@ namespace Gnd.HuntingDebuffs
         private void RegisterCommands(ICoreServerAPI api)
         {
             api.ChatCommands
-                .Create("huntingdebuffs")
+                .Create("hd")
                 .WithDescription("Управление модом Hunting Debuffs")
                 .RequiresPrivilege(Privilege.controlserver)
                 .BeginSubCommand("reload")
