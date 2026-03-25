@@ -9,8 +9,6 @@ namespace Gnd.HuntingDebuffs
     [HarmonyPatch(typeof(Entity), "ReceiveDamage")]
     public class EntityDamagePatch
     {
-        private static bool onceLogged;
-
         private static void Prefix(Entity __instance, DamageSource damageSource, float damage)
         {
             try
@@ -23,12 +21,6 @@ namespace Gnd.HuntingDebuffs
                 if (instance?.Sapi == null || __instance?.Alive != true)
                     return;
 
-                if (!onceLogged)
-                {
-                    instance.Sapi.Logger.Notification("[GND] Harmony prefix for Entity.ReceiveDamage is firing.");
-                    onceLogged = true;
-                }
-
                 IServerPlayer player = null;
                 string weaponCode = "";
                 bool isRangedAttack = false;
@@ -38,12 +30,8 @@ namespace Gnd.HuntingDebuffs
                     player = instance.Sapi.World.PlayerByUid(directPlayer.PlayerUID) as IServerPlayer;
                     weaponCode = directPlayer.RightHandItemSlot?.Itemstack?.Collectible?.Code?.Path ?? "";
 
-                    // Проверяем, является ли это атакой в ближнем бою (не дальнобойной)
-                    // Если источник урона - сам игрок и оружие - лук, то это удар луком в ближнем бою
                     if (weaponCode.Contains("bow"))
                     {
-                        // Для лука в ближнем бою не применяем кровотечение
-                        instance.Sapi.Logger.Debug("[GND] Bow melee attack - skipping bleed");
                         return;
                     }
                 }
@@ -51,7 +39,7 @@ namespace Gnd.HuntingDebuffs
                 {
                     player = instance.Sapi.World.PlayerByUid(indirectPlayer.PlayerUID) as IServerPlayer;
                     weaponCode = "arrow";
-                    isRangedAttack = true; // Это выстрел из лука (стрела)
+                    isRangedAttack = true;
                 }
 
                 if (player != null)
